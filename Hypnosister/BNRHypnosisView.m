@@ -62,9 +62,14 @@
     path.lineWidth = 10;
     [[UIColor lightGrayColor] setStroke];
     
+    // Adding in the image
+    UIImage *logoImage = [UIImage imageNamed:@"BNRLogo.png"];
     
     // DRAW!
     [path stroke];
+    
+    // Drawing the image on top (hopfully)
+    [logoImage drawInRect:bounds];
     
 }
 
