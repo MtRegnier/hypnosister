@@ -86,7 +86,6 @@
     [clippingPath moveToPoint:gradientEnd];
     [clippingPath addLineToPoint:clipPointOne];
     [clippingPath addLineToPoint:clipPointTwo];
-//    [clippingPath addLineToPoint:gradientEnd];
     [clippingPath closePath];
     
     CGFloat locations[2] = { 0.0, 1.0 };
