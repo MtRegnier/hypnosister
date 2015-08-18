@@ -65,11 +65,13 @@
     // Adding in the image
     UIImage *logoImage = [UIImage imageNamed:@"BNRLogo.png"];
     
+    CGRect imageBounds = CGRectMake(100, 178, 176.0, 231.0);
+    
     // DRAW!
     [path stroke];
     
     // Drawing the image on top (hopfully)
-    [logoImage drawInRect:bounds];
+    [logoImage drawInRect:imageBounds];
     
 }
 
