@@ -23,6 +23,8 @@
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect {
+    CGContextRef currentContext = UIGraphicsGetCurrentContext();
+    
     CGRect bounds = self.bounds;
     
     // Figuring out where the center of the bounds is
@@ -68,8 +70,13 @@
     // DRAW!
     [path stroke];
     
+    CGRect imageBounds = CGRectMake(100, 178, 176.0, 231.0);
+    
+    // Grabbing the context to set up the drop shadow
+    CGContextSaveGState(currentContext);
+    
     // Drawing the image on top (hopfully)
-    [logoImage drawInRect:bounds];
+    [logoImage drawInRect:imageBounds];
     
 }
 
