@@ -72,12 +72,44 @@
     
     CGRect imageBounds = CGRectMake(100, 178, 176.0, 231.0);
     
-    // Grabbing the context to set up the drop shadow
+    // Making points for the clipping path and gradient
+    CGPoint gradientEnd = CGPointMake(imageBounds.origin.x + 88, imageBounds.origin.y);
+    
+    CGPoint gradientStart = CGPointMake(imageBounds.origin.x + 88, (imageBounds.origin.y + imageBounds.size.height));
+    
+    CGPoint clipPointOne = CGPointMake(imageBounds.origin.x, imageBounds.origin.y + 231);
+    
+    CGPoint clipPointTwo = CGPointMake(imageBounds.origin.x + imageBounds.size.width, imageBounds.origin.y + 231);
+    
+    UIBezierPath *clippingPath = [[UIBezierPath alloc] init];
+    
+    [clippingPath moveToPoint:gradientEnd];
+    [clippingPath addLineToPoint:clipPointOne];
+    [clippingPath addLineToPoint:clipPointTwo];
+//    [clippingPath addLineToPoint:gradientEnd];
+    [clippingPath closePath];
+    
+    CGFloat locations[2] = { 0.0, 1.0 };
+    CGFloat components[8] = {1.0, 1.0, 0, 1.0, 0, 1.0, 0, 1.0};
+    CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceRGB();
+    CGGradientRef gradient = CGGradientCreateWithColorComponents(colorspace, components, locations, 2);
+    
+    // Setting up the context for the gradient
     CGContextSaveGState(currentContext);
     
+    [clippingPath addClip];
+    CGContextDrawLinearGradient(currentContext, gradient, gradientStart, gradientEnd, 0);
+    
+    CGContextRestoreGState(currentContext);
+    
+    CGGradientRelease(gradient);
+    CGColorSpaceRelease(colorspace);
+    // Grabbing the context to set up the drop shadow
+    CGContextSaveGState(currentContext);
+    CGContextSetShadow(currentContext, CGSizeMake(4, 7), 3);
     // Drawing the image on top (hopfully)
     [logoImage drawInRect:imageBounds];
-    
+    CGContextRestoreGState(currentContext);
 }
 
 
