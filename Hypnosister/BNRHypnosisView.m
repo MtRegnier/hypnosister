@@ -8,6 +8,12 @@
 
 #import "BNRHypnosisView.h"
 
+@interface BNRHypnosisView ()
+
+@property (strong, nonatomic) UIColor *circleColor;
+
+@end
+
 @implementation BNRHypnosisView
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -16,12 +22,11 @@
     if (self) {
         // BNRHypnosis views start off with a clear background color
         self.backgroundColor = [UIColor clearColor];
+        self.circleColor = [UIColor lightGrayColor];
     }
     return self;
 }
 
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect {
     CGContextRef currentContext = UIGraphicsGetCurrentContext();
     
@@ -62,7 +67,9 @@
     
     // Settings for stroke
     path.lineWidth = 10;
-    [[UIColor lightGrayColor] setStroke];
+    // Switching to using a defined color
+//    [[UIColor lightGrayColor] setStroke];
+    [self.circleColor setStroke];
     
     // Adding in the image
     UIImage *logoImage = [UIImage imageNamed:@"BNRLogo.png"];
@@ -70,16 +77,16 @@
     // DRAW!
     [path stroke];
     
-    CGRect imageBounds = CGRectMake(100, 178, 176.0, 231.0);
+    CGRect imageBounds = CGRectMake(100.0, 178.0, 176.0, 231.0);
     
     // Making points for the clipping path and gradient
-    CGPoint gradientEnd = CGPointMake(imageBounds.origin.x + 88, imageBounds.origin.y);
+    CGPoint gradientEnd = CGPointMake(imageBounds.origin.x + 88.0, imageBounds.origin.y);
     
-    CGPoint gradientStart = CGPointMake(imageBounds.origin.x + 88, (imageBounds.origin.y + imageBounds.size.height));
+    CGPoint gradientStart = CGPointMake(imageBounds.origin.x + 88.0, (imageBounds.origin.y + imageBounds.size.height));
     
-    CGPoint clipPointOne = CGPointMake(imageBounds.origin.x, imageBounds.origin.y + 231);
+    CGPoint clipPointOne = CGPointMake(imageBounds.origin.x, imageBounds.origin.y + 231.0);
     
-    CGPoint clipPointTwo = CGPointMake(imageBounds.origin.x + imageBounds.size.width, imageBounds.origin.y + 231);
+    CGPoint clipPointTwo = CGPointMake(imageBounds.origin.x + imageBounds.size.width, imageBounds.origin.y + 231.0);
     
     UIBezierPath *clippingPath = [[UIBezierPath alloc] init];
     
@@ -109,6 +116,31 @@
     // Drawing the image on top (hopfully)
     [logoImage drawInRect:imageBounds];
     CGContextRestoreGState(currentContext);
+}
+
+// Overriding touchesBegan:withEvent: to change color of circle on touch
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    NSLog(@"%@ was touched", self);
+    
+    // Generating random numbers for color codes
+    float red = (arc4random() % 100)/100.0;
+    float green = (arc4random() % 100)/100.0;
+    float blue = (arc4random() % 100)/100.0;
+    
+    UIColor *randomColor = [UIColor colorWithRed:red
+                                           green:green
+                                            blue:blue 
+                                           alpha:1.0];
+    
+    self.circleColor = randomColor;
+}
+
+// Custom setter for circleColor for view updating
+- (void)setCircleColor:(UIColor *)circleColor
+{
+    _circleColor = circleColor;
+    [self setNeedsDisplay];
 }
 
 
