@@ -9,7 +9,9 @@
 #import "AppDelegate.h"
 #import "BNRHypnosisView.h"
 
-@interface AppDelegate ()
+@interface AppDelegate () <UIScrollViewDelegate>
+
+@property (nonatomic, weak) BNRHypnosisView *hypnosisSubview;
 
 @end
 
@@ -26,34 +28,45 @@
     CGRect bigRect = screenRect;
     bigRect.size.width *= 2.0;
     // Commented out for panning and paging
-//    bigRect.size.height *= 2.0;
+    bigRect.size.height *= 2.0;
     
     // Creating scroll view and adding it to the window
     UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:screenRect];
-    scrollView.pagingEnabled = YES;
+    scrollView.pagingEnabled = NO;
     [self.window addSubview:scrollView];
-    
-    // Create large hypnosis view and add it to the scroll view
-    // Commented out for panning and paging
-//    BNRHypnosisView *hypnosisView = [[BNRHypnosisView alloc] initWithFrame:bigRect];
-//    [scrollView addSubview:hypnosisView];
-    // Creating screen sized hypnosis view, adding to scroll view
-    BNRHypnosisView *hypnosisView = [[BNRHypnosisView alloc] initWithFrame:screenRect];
-    [scrollView addSubview:hypnosisView];
-    
-    // Second hypnosis view to the right
-    screenRect.origin.x += screenRect.size.width;
-    BNRHypnosisView *anotherView = [[BNRHypnosisView alloc] initWithFrame:screenRect];
-    [scrollView addSubview:anotherView];
     
     // Let the scroll view know how large its content area is
     scrollView.contentSize = bigRect.size;
+    
+    // Set the limits on zooming in and out here (check docs for details)
+    scrollView.minimumZoomScale = 0.5;
+    scrollView.maximumZoomScale = 2.0;
+    
+    // Setting the delegate for scrollView
+    scrollView.delegate = self;
+    
+    // Create large hypnosis view and add it to the scroll view
+    // Swap this out for the property setter instead
+    BNRHypnosisView *hypnosisView = [[BNRHypnosisView alloc] initWithFrame:screenRect];
+    [self setHypnosisSubview:hypnosisView];
+    
+    [scrollView addSubview:self.hypnosisSubview];
+    
+    // Second hypnosis view to the right
+    screenRect.origin.x += screenRect.size.width;
     
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     NSLog(@"Hello");
     return YES;
 }
+
+// Implement viewForZoomingInScrollView: here, returns BNRHypnosisView
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
+{
+    return self.hypnosisSubview;
+}
+
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
